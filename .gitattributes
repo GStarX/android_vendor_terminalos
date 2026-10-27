@@ -1,0 +1,4 @@
+# 统一换行：脚本与 Android 构建文件必须以 LF 存储。
+* text=auto eol=lf
+
+*.apk binary

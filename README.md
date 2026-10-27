@@ -26,6 +26,7 @@ android_vendor_terminalos/            # 挂载到 $TOP/vendor/terminalos
 ├── terminalos.mk                     # 产品片段：PRODUCT_PACKAGES / overlay / 只读属性
 ├── Android.bp                        # Termux 预置模块（android_app_import, presigned）
 ├── .gitignore                        # 忽略 prebuilt/*.apk（二进制不入库）
+├── .gitattributes                    # 统一 LF 换行；*.apk 标记为 binary
 ├── README.md                         # 本文件
 ├── config/
 │   └── README.md                     # 策略常量索引（Termux 版本锁定、目标分支、overlay 清单）
@@ -72,10 +73,10 @@ android_vendor_terminalos/            # 挂载到 $TOP/vendor/terminalos
 # 1. 构建前必须：下载并校验预置 Termux APK（二进制不入库）
 bash vendor/terminalos/scripts/fetch-termux.sh
 
-# 2. 标准 LineageOS 构建流程
+# 2. 标准 LineageOS 构建流程（与设备树 TERMINALOS_BRANCH.md 一致；本项目未执行过）
 source build/envsetup.sh
 lunch terminalos_polaris-userdebug
-mka bacon
+brunch terminalos_polaris
 ```
 
 - lunch target：**`terminalos_polaris-userdebug`**

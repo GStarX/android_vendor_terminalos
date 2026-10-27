@@ -49,7 +49,8 @@ lunch terminalos_polaris-userdebug
 
 - 模块名 `TerminalHome` 与 `Termux` 是产品契约：`PRODUCT_PACKAGES` 里引用的是
   Soong 模块名。`Termux` 由本仓库 `Android.bp` 定义；`TerminalHome` 由 TerminalHome
-  的独立仓库定义（同样需写进 local manifest），本仓库不提供其源码。
+  的独立仓库定义（预期挂载到 `packages/apps/TerminalHome`，同样需写进 local
+  manifest），本仓库不提供其源码。
 - 静态 overlay 的相对路径按 `$TOP` 解析，因此写作 `vendor/terminalos/overlay`
   （仓库内对应 `overlay/` 目录）。
 
@@ -69,13 +70,16 @@ lunch terminalos_polaris-userdebug
 2. 同步 local manifest，确保以下仓库都在树里：设备树、内核、blobs、TerminalHome、
    本仓库。
 
-3. 标准 LineageOS 构建流程（说明用，未在本项目执行过）：
+3. 标准 LineageOS 构建流程（说明用，未在本项目执行过；与设备树
+   `TERMINALOS_BRANCH.md` 记录的命令一致）：
 
    ```bash
    source build/envsetup.sh
    lunch terminalos_polaris-userdebug
-   mka bacon
+   brunch terminalos_polaris
    ```
+
+   （`brunch <product>` 是 LineageOS 的标准封装；等价于 `mka bacon`。）
 
 4. 构建产物应位于 `out/target/product/polaris/`。
 
@@ -111,7 +115,7 @@ lunch terminalos_polaris-userdebug
   也没有必要写 launcher 相关的移除逻辑；launcher 组件清单继续由上游
   `common_mobile.mk` 维护。
 - 默认 HOME 的接管方式是**运行时策略**：TerminalHome 以 Device Owner 身份调用
-  `PackageManager.addPersistentPreferredActivity` 把自己设为默认 HOME。
+  `DevicePolicyManager.addPersistentPreferredActivity` 把自己设为默认 HOME。
   这属于 Phase 2 实现，当前未实现、未验证。
 - 需要拉起 Termux 时，使用显式组件 **`com.termux/.app.TermuxActivity`**
   （Termux v0.118.3 已核实），不要用隐式 ACTION_MAIN intent。

@@ -26,7 +26,8 @@
 # TerminalHome
 #   为什么需要：TerminalOS 的默认桌面/入口应用，必须随系统预置，不能依赖
 #   用户从第三方商店安装。模块名 "TerminalHome" 由 TerminalHome 的独立仓库
-#   提供（该仓库同样需要写进 local manifest；模块名是产品契约）。
+#   提供（预期挂载到 packages/apps/TerminalHome，同样需要写进 local manifest；
+#   Soong 模块名必须正好是 TerminalHome，这是产品契约）。
 #   验证状态：未构建。若设备树/清单里缺 TerminalHome 仓库，构建会在
 #   "module TerminalHome not found" 处失败——这是预期行为，用来尽早暴露
 #   依赖缺失，而不是静默跳过。

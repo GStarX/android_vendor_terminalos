@@ -32,4 +32,26 @@
     -->
     <bool name="config_showNavigationBar">false</bool>
 
+    <!--
+      允许 TerminalHome 持有系统监督角色（ROLE_SYSTEM_SUPERVISION）。
+
+      依据（已核验 lineage-23.2 源码）：
+        - frameworks/base 存在 aconfig flag
+          android.app.supervision.flags.enable_lock_task_feature_quick_settings；
+        - LockTaskController 用 DevicePolicyManager.LOCK_TASK_FEATURE_QUICK_SETTINGS
+          控制锁任务模式下能否使用快捷设置；
+        - DevicePolicyManagerService.setLockTaskFeatures() 要求调用方（DPC）
+          持有 RoleManager.ROLE_SYSTEM_SUPERVISION，否则拒绝带 QUICK_SETTINGS 位的配置；
+        - frameworks/base 的 config_allowedSupervisionRolePackages 定义"允许持有监督角色的包"
+          （系统应用只需包名；非系统应用需要 "包名:签名摘要"）。
+
+      意义：这是"锁定终端 + 顶部快捷设置可用"这一核心需求的**标准 API 路径**，
+      可以避免修改 frameworks/base 源码。TerminalHome 仍需在运行时通过 RoleManager
+      请求该角色（用户确认），本 overlay 只是把它列入允许名单。
+
+      状态：未构建、未实机验证。若 Phase 3 实测证明角色流程不可用，回退方案是删除本条
+      并在评审通过后使用最小 SystemUI/框架补丁（见项目仓库 docs/08）。
+    -->
+    <string name="config_allowedSupervisionRolePackages" translatable="false">org.terminalos.terminalhome</string>
+
 </resources>
