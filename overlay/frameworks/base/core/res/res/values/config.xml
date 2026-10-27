@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  TerminalOS 静态 overlay：frameworks/base 资源覆盖
+  目标设备：Xiaomi MIX 2S（polaris）
+  仓库位置：vendor/terminalos/overlay/frameworks/base/core/res/res/values/config.xml
+  生效方式：terminalos.mk 里的
+      PRODUCT_PACKAGE_OVERLAYS += vendor/terminalos/overlay
+  目录结构必须与目标包（frameworks/base/core/res）严格一致，否则资源不会生效。
+
+  状态声明：本 overlay 尚未构建、尚未实机验证。下面这条改动的影响面详见
+  注释：未实机验证，Phase 3 需测试手势提示条与 Quick Settings 行为。
+-->
+<resources>
+
+    <!--
+      隐藏底部导航条（导航栏）。
+      资源名 config_showNavigationBar 来自 AOSP frameworks/base/core/res 的
+      真实资源定义（frameworks/base/core/res/res/values/config.xml），原样覆盖，
+      不新增/猜测其他资源。
+
+      为什么需要：TerminalOS 希望把底部空间留给终端界面，隐藏三键/系统导航栏。
+
+      风险与待验证项（未实机验证，Phase 3 需测试手势提示条与 Quick Settings 行为）：
+        - MIX 2S 没有实体导航键。把导航栏关掉之后，手势导航是否仍可用、
+          手势提示条（navigation bar hint / gesture handle）是否还能显示，
+          必须在 Android 16 上实测；若手势导航不可用，设备会失去返回/主页
+          操作入口。
+        - 导航栏高度为 0 时，Quick Settings 下拉区域与状态栏手势的触控区域
+          可能随之变化，需要一起验证。
+        - 如果实测有问题，回滚方式是直接删除本文件中的这个 <bool> 条目
+          （恢复到默认值），然后重新构建 system 镜像。
+    -->
+    <bool name="config_showNavigationBar">false</bool>
+
+</resources>

@@ -1,0 +1,6 @@
+# 预置二进制 APK 永远不入库：见 prebuilt/README.md。
+# 构建机通过 scripts/fetch-termux.sh 从上游官方 release 拉取并按 SHA256 校验。
+prebuilt/*.apk
+
+# 下载过程中的临时文件（fetch 脚本使用 .part 后缀，成功后 rename）
+prebuilt/*.apk.part

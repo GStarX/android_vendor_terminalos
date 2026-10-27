@@ -1,0 +1,45 @@
+// Android.bp —— TerminalOS（polaris）预置应用定义
+//
+// 本仓库挂载于 $TOP/vendor/terminalos，由 Soong 在整树扫描时发现本文件。
+// 模块名 "Termux" 是产品契约：terminalos.mk 的 PRODUCT_PACKAGES 引用的就是
+// 这个名字，改名前必须同步改产品配置和文档。
+//
+// APK 来源：Termux 官方发布（termux/termux-app v0.118.3，arm64-v8a，
+//   GitHub Actions debug 签名）。二进制不入库，见 .gitignore 与
+//   prebuilt/README.md。构建前必须执行：
+//       bash scripts/fetch-termux.sh
+//   fetch 脚本会校验大小与 SHA256（prebuilt/Termux.apk.sha256）。
+//   注意：文件缺失时 Soong 会直接报错（missing prebuilt），不会静默跳过；
+//   这是预期行为——保证构建机上的 APK 一定是校验过的锁定版本。
+//
+// 为什么 presigned: true（必须）：
+//   APK 已由 Termux 官方 GitHub Actions 的 debug key 签名，不是 AOSP 平台
+//   签名证书。若让构建系统重新签名（或改为平台签名），会：
+//     1) 改变 APK 字节，使预置文件与上游发布资产不一致，SHA256 锁定失去意义；
+//     2) 使预置的 Termux 与将来可能引入的官方 Termux 插件（例如 Termux:Boot）
+//        签名不一致，影响插件/权限类功能。
+//   因此按"原样预置"处理，不重签名、不 zip-aligned 改写。
+//
+// 为什么 dex_preopt: { enabled: false }：
+//   1) 预优化（dex2oat）需要生成 odex/vdex 并对 APK 做相应处理/重签名，与
+//      "保持原始字节、presigned"这一前提冲突，也会破坏上面的 SHA256 校验链；
+//   2) Termux 的可用性取决于它自带的 bootstrap，不依赖 dex 预优化；
+//      跳过 preopt 可以让预置 APK 与上游资产逐字节一致，便于校验、替换和回滚。
+//   未验证：跳过 preopt 在 Android 16 上对首次启动性能的影响（预期很小），
+//   需要在 Phase 3 实机评估。
+//
+// 安装位置：本模块未显式指定 partition，沿用 Soong 对 android_app_import 的
+//   默认行为（system 分区）。该选择未在真机验证；若 Phase 3 确认需要
+//   product/vendor 分区再调整（同时要核对动态分区/只读分区约束）。
+//
+// 未验证声明：本模块定义只经过静态审查，尚未参与任何成功构建，也未在
+//   Android 16 设备上安装运行过。
+
+android_app_import {
+    name: "Termux",
+    apk: "prebuilt/Termux.apk",
+    presigned: true,
+    dex_preopt: {
+        enabled: false,
+    },
+}
